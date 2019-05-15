@@ -27,7 +27,7 @@ from scripts.test.shared import (
     binary_format_check, delete_from_orbit, fail, fail_with_error,
     fail_if_not_identical, fail_if_not_contained, has_vanilla_emcc,
     has_vanilla_llvm, minify_check, options, tests, requested, warnings,
-    has_shell_timeout, fail_if_not_identical_to_file, with_pass_debug
+    has_shell_timeout, fail_if_not_identical_to_file, with_pass_debug, test_out
 )
 
 # For shared.num_failures. Cannot import directly because modifications made in
@@ -65,9 +65,10 @@ def run_wasm_opt_tests():
   for extra_args in [[], ['--no-validation']]:
     wast = os.path.join(options.binaryen_test, 'hello_world.wast')
     delete_from_orbit('a.wast')
-    cmd = WASM_OPT + [wast, '-o', 'a.wast', '-S'] + extra_args
+    out = os.path.join(test_out, 'a.wast')
+    cmd = WASM_OPT + [wast, '-o', out, '-S'] + extra_args
     run_command(cmd)
-    fail_if_not_identical_to_file(open('a.wast').read(), wast)
+    fail_if_not_identical_to_file(open(out).read(), wast)
 
   print '\n[ checking wasm-opt binary reading/writing... ]\n'
 
@@ -156,10 +157,11 @@ def run_wasm_opt_tests():
 
   print '\n[ checking wasm-opt debugInfo read-write... ]\n'
 
-  for t in os.listdir('test'):
+  test_dir = os.path.join(options.binaryen_root, 'test')
+  for t in os.listdir(test_dir):
     if t.endswith('.fromasm') and 'debugInfo' in t:
       print '..', t
-      t = os.path.join('test', t)
+      t = os.path.join(test_dir, t)
       f = t + '.read-written'
       run_command(WASM_AS + [t, '--source-map=a.map', '-o', 'a.wasm', '-g'])
       run_command(WASM_OPT + ['a.wasm', '--input-source-map=a.map', '-o', 'b.wasm', '--output-source-map=b.map', '-g'])
