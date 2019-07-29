@@ -138,9 +138,23 @@ struct PassRunner {
   std::vector<Pass*> passes;
   PassOptions options;
 
-  PassRunner(Module* wasm) : wasm(wasm), allocator(&wasm->allocator) {}
+  // PassRunner(Module* wasm) : wasm(wasm), allocator(&wasm->allocator) {}
+  PassRunner(Module* wasm) : wasm(wasm), allocator(&wasm->allocator) {
+    std::cout
+      << "AX pass.h @ PassRunner("
+      << static_cast<void*>(wasm) << ")"
+      << std::endl;
+  }
+  // PassRunner(Module* wasm, PassOptions options)
+  //   : wasm(wasm), allocator(&wasm->allocator), options(options) {}
   PassRunner(Module* wasm, PassOptions options)
-    : wasm(wasm), allocator(&wasm->allocator), options(options) {}
+    : wasm(wasm), allocator(&wasm->allocator), options(options) {
+    std::cout
+      << "Ax pass.h @ PassRunner("
+      << std::hex << static_cast<void*>(wasm)
+      << ", " << std::hex << static_cast<void*>(&options) << ")"
+      << std::endl;
+  }
 
   // no copying, we control |passes|
   PassRunner(const PassRunner&) = delete;
@@ -157,6 +171,9 @@ struct PassRunner {
   }
 
   void add(std::string passName) {
+    std::cout
+      << "AX pass.h @ PassRunner::add(" << passName << ")"
+      << std::endl;
     auto pass = PassRegistry::get()->createPass(passName);
     if (!pass) {
       Fatal() << "Could not find pass: " << passName << "\n";
@@ -308,6 +325,17 @@ protected:
 
 public:
   void run(PassRunner* runner, Module* module) override {
+    // This is the thing that is called to start a Pass
+    std::cout
+      << "AX pass.h @ WalkerPass::run("
+        << std::hex << static_cast<void*>(runner) << ", "
+        << std::hex << static_cast<void*>(module) << ")"
+      << std::endl;
+    std::cout
+      << "AX pass.h @ WalkerPass::run: this == "
+      << static_cast<void*>(this)
+      << std::endl;
+
     setPassRunner(runner);
     WalkerType::setModule(module);
     WalkerType::walkModule(module);

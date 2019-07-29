@@ -33,6 +33,7 @@ struct OptimizationOptions : public ToolOptions {
   OptimizationOptions(const std::string& command,
                       const std::string& description)
     : ToolOptions(command, description) {
+
     (*this)
       .add("",
            "-O",
@@ -211,18 +212,55 @@ struct OptimizationOptions : public ToolOptions {
   bool runningPasses() { return passes.size() > 0; }
 
   void runPasses(Module& wasm) {
+    std::cout
+      << "AX optimization-options.h @ OptimizationOptions::runPasses("
+      << static_cast<void*>(&wasm) << ")"
+      << std::endl;
+
     PassRunner passRunner(&wasm, passOptions);
     if (debug) {
       passRunner.setDebug(true);
     }
+    std::cout
+      << "AX optimization-options.h @ OptimizationOptions::runPasses: "
+      << "adding passes"
+      << std::endl;
     for (auto& pass : passes) {
+
       if (pass == DEFAULT_OPT_PASSES) {
+        std::cout
+          << "AX optimization-options.h @ OptimizationOptions::runPasses: "
+          << "adding default "
+          << pass
+          << std::endl;
         passRunner.addDefaultOptimizationPasses();
       } else {
         passRunner.add(pass);
       }
     }
+    std::cout
+      << "AX optimization-options.h @ OptimizationOptions::runPasses: "
+      << "done adding passes"
+      << std::endl;
+
+    std::cout
+      << std::endl
+      << std::endl
+      << "AX optimization-options.h @ OptimizationOptions::runPasses: "
+      << "...................."
+      << std::endl
+      << std::endl
+      << std::endl;
+
+    std::cout
+      << "AX optimization-options.h @ OptimizationOptions::runPasses: "
+      << "passRunner.run()"
+      << std::endl;
     passRunner.run();
+    std::cout
+      << "AX optimization-options.h @ OptimizationOptions::runPasses: "
+      << "passRunner.run() done"
+      << std::endl;
   }
 };
 

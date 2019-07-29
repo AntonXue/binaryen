@@ -435,7 +435,15 @@ static void dumpWast(Name name, Module* wasm) {
 }
 
 void PassRunner::run() {
+  std::cout << "AX pass.cpp @ PassRunner::run()" << std::endl;
+
+  // AX: this is debug mode, need to skip to the else part.
   static const int passDebug = getPassDebug();
+  std::cout
+    << "AX pass.cpp @ PassRunner::run: "
+    << "!isNested && (options.debug || passDebug) == "
+    << (!isNested && (options.debug || passDebug))
+    << std::endl;
   if (!isNested && (options.debug || passDebug)) {
     // for debug logging purposes, run each pass in full before running the
     // other
@@ -545,13 +553,31 @@ void PassRunner::run() {
       }
       stack.clear();
     };
+    std::cout
+      << "AX pass.cpp @ PassRunner::run: passes.size() == "
+      << passes.size()
+      << std::endl;
+
+    std::cout << std::endl;
+
     for (auto* pass : passes) {
-      if (pass->isFunctionParallel()) {
-        stack.push_back(pass);
-      } else {
-        flush();
-        runPass(pass);
-      }
+      flush();
+
+      runPass(pass);
+      std::cout
+        << "AX pass.cpp @ PassRunner::runPass("
+        << std::hex << static_cast<void*>(pass) << ") done"
+        << std::endl;
+
+      std::cout << std::endl;
+
+      // AX: we disable parallelism since that is a pain
+      // if (pass->isFunctionParallel()) {
+      //   stack.push_back(pass);
+      // } else {
+      //   flush();
+      //   runPass(pass);
+      // }
     }
     flush();
   }
@@ -673,6 +699,11 @@ struct AfterEffectModuleChecker {
 };
 
 void PassRunner::runPass(Pass* pass) {
+  std::cout
+    << "AX pass.cpp @ PassRunner::runPass("
+    << std::hex << static_cast<void*>(pass) << ")"
+    << std::endl;
+
   std::unique_ptr<AfterEffectModuleChecker> checker;
   if (getPassDebug()) {
     checker = std::unique_ptr<AfterEffectModuleChecker>(

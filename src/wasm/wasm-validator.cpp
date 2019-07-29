@@ -1873,6 +1873,11 @@ static void validateModule(Module& module, ValidationInfo& info) {
 // then Using PassRunner::getPassDebug causes a circular dependence. We should
 // fix that, perhaps by moving some of the pass infrastructure into libsupport.
 bool WasmValidator::validate(Module& module, Flags flags) {
+  std::cout
+    << "AX wasm-validator.cpp @ WasmValidator::validate("
+    << std::hex << static_cast<void*>(&module) << ", "
+    << std::hex << static_cast<void*>(&flags) << ")"
+    << std::endl;
   ValidationInfo info;
   info.validateWeb = (flags & Web) != 0;
   info.validateGlobally = (flags & Globally) != 0;

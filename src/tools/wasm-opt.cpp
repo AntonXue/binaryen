@@ -61,6 +61,8 @@ std::string runCommand(std::string command) {
 //
 
 int main(int argc, const char* argv[]) {
+  std::cout << "AX wasm-opt.cpp @ main" << std::endl;
+
   Name entry;
   bool emitBinary = true;
   bool debugInfo = false;
@@ -213,6 +215,10 @@ int main(int argc, const char* argv[]) {
     std::cerr << "reading...\n";
   }
 
+  // std::cout
+  //   << "AX wasm-opt.cpp @ main: !translateToFuzz == "
+  //   << !translateToFuzz
+  //   << std::endl;
   if (!translateToFuzz) {
     ModuleReader reader;
     reader.setDebug(options.debug);
@@ -233,12 +239,19 @@ int main(int argc, const char* argv[]) {
 
     options.applyFeatures(wasm);
 
+    std::cout
+      << "AX wasm-opt.cpp @ main: validate == "
+      << options.passOptions.validate
+      << std::endl;
     if (options.passOptions.validate) {
       if (!WasmValidator().validate(wasm)) {
         WasmPrinter::printModule(&wasm);
         Fatal() << "error in validating input";
       }
     }
+    std::cout
+      << "AX wasm-opt.cpp @ main: first validation done"
+      << std::endl;
   } else {
     // translate-to-fuzz
     options.applyFeatures(wasm);
@@ -258,6 +271,14 @@ int main(int argc, const char* argv[]) {
       }
     }
   }
+
+  std::cout
+    << std::endl
+    << std::endl
+    << "AX wasm-opt.cpp @ main: ...................."
+    << std::endl
+    << std::endl
+    << std::endl;
 
   if (emitJSWrapper.size() > 0) {
     // As the code will run in JS, we must legalize it.
@@ -329,7 +350,28 @@ int main(int argc, const char* argv[]) {
       std::cerr << "running passes...\n";
     }
     auto runPasses = [&]() {
+      // AX: it seems like there's some additional passes (adds?)
+      // that are run before this
+      std::cout
+        << "AX wasm-opt.cpp @ runPasses_L()" << std::endl;
       options.runPasses(*curr);
+      std::cout
+        << "AX wasm-opt.cpp @ runPasses_L: "
+        << "options.runPasses(" << static_cast<void*>(curr) << ") done"
+        << std::endl;
+
+      std::cout
+        << std::endl
+        << std::endl
+        << "AX wasm-opt.cpp @ runPasses_L: ...................."
+        << std::endl
+        << std::endl
+        << std::endl;
+
+      std::cout
+        << "AX wasm-opt.cpp @ runPasses_L: options.passOptions.validate == "
+        << options.passOptions.validate
+        << std::endl;
       if (options.passOptions.validate) {
         bool valid = WasmValidator().validate(*curr);
         if (!valid) {
@@ -337,8 +379,35 @@ int main(int argc, const char* argv[]) {
         }
         assert(valid);
       }
+      std::cout
+        << "AX wasm-opt.cpp @ runPasses_L: second validation done"
+        << std::endl;
+
+      std::cout
+        << std::endl
+        << std::endl
+        << "AX wasm-opt.cpp @ runPasses_L: ...................."
+        << std::endl
+        << std::endl
+        << std::endl;
+
+      std::cout
+        << "AX wasm-opt.cpp @ runPasses_L dump: start:"
+        << std::endl;
+      std::cout
+        << "AX wasm-opt.cpp @ runPasses_L dump: DUMMY TEXT"
+        << std::endl;
+      // WasmPrinter::printModule(&*curr);
+      std::cout
+        << "AX wasm-opt.cpp @ runPasses_L dump: done"
+        << std::endl;
     };
+
+    std::cout << "AX wasm-opt.cpp @ main: runPasses()" << std::endl;
     runPasses();
+    std::cout
+      << "AX wasm-opt.cpp @ main: runPasses() done"
+      << std::endl << std::endl;
     if (converge) {
       // Keep on running passes to convergence, defined as binary
       // size no longer decreasing.
