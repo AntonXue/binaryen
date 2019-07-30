@@ -225,6 +225,8 @@ struct OptimizationOptions : public ToolOptions {
       << "AX optimization-options.h @ OptimizationOptions::runPasses: "
       << "adding passes"
       << std::endl;
+    // AX : this loop can be edited to override and add
+    // exactly the passes we want, where pass variable is a string
     for (auto& pass : passes) {
 
       if (pass == DEFAULT_OPT_PASSES) {
@@ -246,8 +248,9 @@ struct OptimizationOptions : public ToolOptions {
     std::cout
       << std::endl
       << std::endl
+      << ".......... "
       << "AX optimization-options.h @ OptimizationOptions::runPasses: "
-      << "...................."
+      << ".......... "
       << std::endl
       << std::endl
       << std::endl;

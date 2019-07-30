@@ -207,7 +207,25 @@ int main(int argc, const char* argv[]) {
                     [](Options* o, const std::string& argument) {
                       o->extra["infile"] = argument;
                     });
+
+
+  std::cout
+    << "AX wasm-opt.cpp @ main: pre-parse options.parse.size() == "
+    << options.passes.size()
+    << std::endl;
   options.parse(argc, argv);
+  std::cout
+    << "AX wasm-opt.cpp @ main: post-parse options.parse.size() == "
+    << options.passes.size()
+    << std::endl;
+
+  std::cout
+    << std::endl
+    << std::endl
+    << ".......... AX wasm-opt.cpp @ main: .........."
+    << std::endl
+    << std::endl
+    << std::endl;
 
   Module wasm;
 
@@ -275,7 +293,7 @@ int main(int argc, const char* argv[]) {
   std::cout
     << std::endl
     << std::endl
-    << "AX wasm-opt.cpp @ main: ...................."
+    << ".......... AX wasm-opt.cpp @ main: .........."
     << std::endl
     << std::endl
     << std::endl;
@@ -350,8 +368,6 @@ int main(int argc, const char* argv[]) {
       std::cerr << "running passes...\n";
     }
     auto runPasses = [&]() {
-      // AX: it seems like there's some additional passes (adds?)
-      // that are run before this
       std::cout
         << "AX wasm-opt.cpp @ runPasses_L()" << std::endl;
       options.runPasses(*curr);
@@ -363,7 +379,7 @@ int main(int argc, const char* argv[]) {
       std::cout
         << std::endl
         << std::endl
-        << "AX wasm-opt.cpp @ runPasses_L: ...................."
+        << ".......... AX wasm-opt.cpp @ runPasses_L: .........."
         << std::endl
         << std::endl
         << std::endl;
@@ -386,7 +402,7 @@ int main(int argc, const char* argv[]) {
       std::cout
         << std::endl
         << std::endl
-        << "AX wasm-opt.cpp @ runPasses_L: ...................."
+        << ".......... AX wasm-opt.cpp @ runPasses_L: .........."
         << std::endl
         << std::endl
         << std::endl;

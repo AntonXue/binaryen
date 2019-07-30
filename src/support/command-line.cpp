@@ -107,6 +107,14 @@ Options& Options::add_positional(const std::string& name,
 }
 
 void Options::parse(int argc, const char* argv[]) {
+  std::cout
+    << "AX commandline.cpp @ parse("
+    << argc << ", " << argv << ")" << std::endl;
+  for (int i = 0; i < argc; i++) {
+    std::cout
+      << "AX commandline.cpp @ parse: argv[" << i << "] == "
+      << argv[i] << std::endl;
+  }
   assert(argc > 0 && "expect at least program name as an argument");
   size_t positionalsSeen = 0;
   auto dashes = [](const std::string& s) {

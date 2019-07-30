@@ -437,7 +437,7 @@ static void dumpWast(Name name, Module* wasm) {
 void PassRunner::run() {
   std::cout << "AX pass.cpp @ PassRunner::run()" << std::endl;
 
-  // AX: this is debug mode, need to skip to the else part.
+  // AX : this is debug mode, need to skip to the else part.
   static const int passDebug = getPassDebug();
   std::cout
     << "AX pass.cpp @ PassRunner::run: "
@@ -540,6 +540,8 @@ void PassRunner::run() {
             if (!func->imported()) {
               // do the current task: run all passes on this function
               for (auto* pass : stack) {
+                // AX : this may be the place to dump "after each run",
+                // though this is on a per-function basis for each module
                 runPassOnFunction(pass, func);
               }
             }
@@ -549,6 +551,8 @@ void PassRunner::run() {
             return ThreadWorkState::More;
           });
         }
+        // AX : according to the thread.h documentation,
+        // work() blocks until all the workers are done
         ThreadPool::get()->work(doWorkers);
       }
       stack.clear();
@@ -561,23 +565,13 @@ void PassRunner::run() {
     std::cout << std::endl;
 
     for (auto* pass : passes) {
-      flush();
-
-      runPass(pass);
-      std::cout
-        << "AX pass.cpp @ PassRunner::runPass("
-        << std::hex << static_cast<void*>(pass) << ") done"
-        << std::endl;
-
-      std::cout << std::endl;
-
-      // AX: we disable parallelism since that is a pain
-      // if (pass->isFunctionParallel()) {
-      //   stack.push_back(pass);
-      // } else {
-      //   flush();
-      //   runPass(pass);
-      // }
+      // AX : why does removing multithreading cause segfaults for make test?
+      if (pass->isFunctionParallel()) {
+        stack.push_back(pass);
+      } else {
+        flush();
+        runPass(pass);
+      }
     }
     flush();
   }
