@@ -139,6 +139,11 @@ void ThreadPool::initialize(size_t num) {
 }
 
 size_t ThreadPool::getNumCores() {
+  // AX : let's try single thread for now
+  // The reason we want this is so that all tasks are forced to
+  // execute in sequence when multithreading is attempted.
+  return 1;
+/*
 #ifdef __EMSCRIPTEN__
   return 1;
 #else
@@ -148,6 +153,7 @@ size_t ThreadPool::getNumCores() {
   }
   return num;
 #endif
+*/
 }
 
 ThreadPool* ThreadPool::get() {

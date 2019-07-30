@@ -550,6 +550,10 @@ void PassRunner::run() {
             }
             return ThreadWorkState::More;
           });
+
+          // AX : Test this out so we flush after every add, which
+          // hopefully allows for linearized behavior
+          // ThreadPool::get()->work(doWorkers); // AX : instrumented
         }
         // AX : according to the thread.h documentation,
         // work() blocks until all the workers are done
@@ -711,6 +715,11 @@ void PassRunner::runPass(Pass* pass) {
 }
 
 void PassRunner::runPassOnFunction(Pass* pass, Function* func) {
+  std::cout
+    << "AX pass.cpp @ PassRunner::runPassOnFunction("
+    << std::hex << static_cast<void*>(pass) << ", "
+    << std::hex << static_cast<void*>(func) << ")"
+    << std::endl;
   assert(pass->isFunctionParallel());
   // function-parallel passes get a new instance per function
   auto instance = std::unique_ptr<Pass>(pass->create());

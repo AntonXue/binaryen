@@ -328,8 +328,8 @@ public:
     // This is the thing that is called to start a Pass
     std::cout
       << "AX pass.h @ WalkerPass::run("
-        << std::hex << static_cast<void*>(runner) << ", "
-        << std::hex << static_cast<void*>(module) << ")"
+      << std::hex << static_cast<void*>(runner) << ", "
+      << std::hex << static_cast<void*>(module) << ")"
       << std::endl;
     std::cout
       << "AX pass.h @ WalkerPass::run: this == "
@@ -343,6 +343,17 @@ public:
 
   void
   runOnFunction(PassRunner* runner, Module* module, Function* func) override {
+    std::cout
+      << "AX pass.h @ WalkerPass::runOnFunction("
+      << std::hex << static_cast<void*>(runner) << ", "
+      << std::hex << static_cast<void*>(module) << ", "
+      << std::hex << static_cast<void*>(func) << ")"
+      << std::endl;
+    std::cout
+      << "AX pass.h @ WalkerPass::runOnFunction: this == "
+      << static_cast<void*>(this)
+      << std::endl;
+
     setPassRunner(runner);
     WalkerType::setModule(module);
     WalkerType::walkFunction(func);
